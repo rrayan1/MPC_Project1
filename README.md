@@ -1,70 +1,50 @@
-# MPC_Project1 — LMPC Racing Notebook
+# LMPC Racing Notebook Project
 
-This repository contains a Jupyter notebook implementing **Learning Model Predictive Control (LMPC)** for **autonomous racing**. The controller improves lap performance iteratively by learning from previously driven trajectories via a **Safe Set** and an approximation of the **cost-to-go** (value function).
+## Overview
 
-> Notebook: `LMPC_Racing_Notebook_project1.ipynb`
+**LMPC_Racing_Notebook_project1.ipynb** is a Jupyter notebook implementing **Learning Model Predictive Control (LMPC)** for autonomous racing applications. This project demonstrates how an autonomous racing vehicle can progressively improve lap performance through iterative learning by building a safe set of trajectories and learning a value function from historical data.
 
----
-
-## What’s inside
-
-- **Learning MPC (LMPC)** loop over laps (iterative improvement)
-- **Dynamic bicycle model** simulation
-- **Curvilinear / track-relative coordinates**:
-  - \( (X,Y,\psi) \leftrightarrow (s,e_y,e_\psi) \)
-- **Local linear regression** to estimate time-varying models along the horizon
-- **Safe Set** terminal constraint + learned terminal cost
-- **Plots and animations** of closed-loop and predicted trajectories
+The notebook was developed by **Ugo Rosolia**, **Charlott Vallon**, **Francesco Borrelli** (UC Berkeley), and **Luigi Glielmo** (Università di Napoli Federico II).
 
 ---
 
-## Repository structure
+## Key Features
+
+### 1. Track Mapping System
+- **Curvilinear coordinate framework:** Converts between global \((X, Y)\) coordinates and track-relative \((s, e_y)\) coordinates.
+- **Multiple track shapes:**
+  - L-shaped track (default)
+  - Goggle-shaped track
+  - Customizable track geometries
+- **Robust coordinate transformation:** Handles position conversion, curvature calculation, and angle computation.
+
+### 2. Vehicle Dynamics Simulator
+- **Dynamic bicycle model:** Represents realistic vehicle physics with:
+  - Longitudinal and lateral tire forces
+  - Steering input (`delta`) and acceleration (`a`)
+  - Yaw rate and heading angle dynamics
+  - Vehicle parameters (mass, inertia, tire coefficients)
+- **Curvilinear frame dynamics:** State variables expressed in the track-relative reference frame.
+
+### 3. LMPC Controller with Local Linear Regression
+- **Iterative learning:** Progressively improves performance over multiple laps.
+- **Local linearization:** Estimates time-varying linear models \((A_k, B_k, C_k)\) from historical data.
+- **Safe set construction:** Builds a set of previously feasible trajectories used as terminal constraints.
+- **Value function learning:** Learns a cost-to-go approximation for terminal state constraints.
+- **Predictive model:** Uses regression on historical trajectories to predict system behavior.
+
+### 4. Trajectory Visualization
+- **Closed-loop trajectory plotting:** Visualizes vehicle path evolution across laps.
+- **Predicted trajectory display:** Shows MPC predictions at each control step.
+- **Safe set visualization:** Displays learned feasible regions.
+- **Animation:** Creates video animations (MP4) of the racing performance evolution.
 
 ---
 
-## State and input definitions
+## Project Structure
 
-### Track-frame state (6D)
-\[
-x = [v_x,\ v_y,\ w_z,\ e_\psi,\ s,\ e_y]
-\]
+### Main Components
 
-- `vx`: longitudinal velocity (m/s)  
-- `vy`: lateral velocity (m/s)  
-- `wz`: yaw rate (rad/s)  
-- `epsi`: heading error (rad)  
-- `s`: curvilinear abscissa along the track (m)  
-- `ey`: lateral deviation from centerline (m)
-
-### Control input (2D)
-\[
-u = [\delta,\ a]
-\]
-
-- `delta`: steering angle (rad)  
-- `a`: acceleration (m/s²)
-
----
-
-## LMPC workflow (high level)
-
-1. **Initialize** controller parameters (e.g., horizon \(N\)) and constraints  
-2. **Warm start** with a baseline controller (e.g., PID) to generate an initial feasible lap  
-3. For each lap:
-   - learn local linear models \(A_k, B_k, C_k\) from stored data (local regression)
-   - construct/update the **Safe Set** and terminal cost estimate
-   - solve the finite-horizon LMPC optimization
-   - apply only the first input, simulate forward, repeat (receding horizon)
-4. Store the new trajectory and update the learning data
-
----
-
-## Installation
-
-Create a virtual environment (recommended), then install dependencies:
-
-```bash
-pip install numpy scipy matplotlib osqp cvxopt
-
-
-
+#### Map Class
+```python
+class Map():
