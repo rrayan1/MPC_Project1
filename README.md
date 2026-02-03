@@ -4,7 +4,6 @@
 
 **LMPC_Racing_Notebook_project1.ipynb** is a Jupyter notebook implementing **Learning Model Predictive Control (LMPC)** for autonomous racing applications. This project demonstrates how an autonomous racing vehicle can progressively improve lap performance through iterative learning by building a safe set of trajectories and learning a value function from historical data.
 
-The notebook was developed by **Ugo Rosolia**, **Charlott Vallon**, **Francesco Borrelli** (UC Berkeley), and **Luigi Glielmo** (Università di Napoli Federico II).
 
 ---
 
@@ -48,3 +47,4 @@ The notebook was developed by **Ugo Rosolia**, **Charlott Vallon**, **Francesco 
 #### Map Class
 ```python
 class Map():
+
